@@ -5,37 +5,43 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using personapi_dotnet.Interface;
 using personapi_dotnet.Models.Entities;
+using personapi_dotnet.Repository;
 
 namespace personapi_dotnet.Controllers
 {
     public class PersonasController : Controller
     {
-        private readonly PersonaDbContext _context;
+        private readonly IPersonaRepository _context;
 
-        public PersonasController(PersonaDbContext context)
+        //Constructor
+        public PersonasController()
+        {
+            _context = new PersonaRepository();
+        }
+        /*
+        public PersonasController(IPersonaRepository context)
         {
             _context = context;
         }
+        */
 
         // GET: Personas
         public async Task<IActionResult> Index()
         {
-              return _context.Personas != null ? 
-                          View(await _context.Personas.ToListAsync()) :
-                          Problem("Entity set 'PersonaDbContext.Personas'  is null.");
+            return View(_context.GetAll());
         }
 
         // GET: Personas/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? cc)
         {
-            if (id == null || _context.Personas == null)
+            if (cc == null)
             {
                 return NotFound();
             }
 
-            var persona = await _context.Personas
-                .FirstOrDefaultAsync(m => m.Cc == id);
+            var persona = _context.GetByCC((int)cc);
             if (persona == null)
             {
                 return NotFound();
@@ -59,22 +65,21 @@ namespace personapi_dotnet.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(persona);
-                await _context.SaveChangesAsync();
+                _context.Insert(persona);
+                _context.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(persona);
         }
 
         // GET: Personas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? cc)
         {
-            if (id == null || _context.Personas == null)
+            if (cc == null)
             {
                 return NotFound();
             }
-
-            var persona = await _context.Personas.FindAsync(id);
+            var persona = _context.GetByCC((int)cc);
             if (persona == null)
             {
                 return NotFound();
@@ -87,46 +92,31 @@ namespace personapi_dotnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Cc,Nombre,Apellido,Genero,Edad")] Persona persona)
+        public async Task<IActionResult> Edit(int cc, [Bind("Cc,Nombre,Apellido,Genero,Edad")] Persona persona)
         {
-            if (id != persona.Cc)
+            if (cc != persona.Cc)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(persona);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonaExists(persona.Cc))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(persona);
+                _context.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(persona);
         }
 
         // GET: Personas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? cc)
         {
-            if (id == null || _context.Personas == null)
+            if (cc == null)
             {
                 return NotFound();
             }
 
-            var persona = await _context.Personas
-                .FirstOrDefaultAsync(m => m.Cc == id);
+            var persona = _context.GetByCC((int)cc);
             if (persona == null)
             {
                 return NotFound();
@@ -138,25 +128,11 @@ namespace personapi_dotnet.Controllers
         // POST: Personas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? cc)
         {
-            if (_context.Personas == null)
-            {
-                return Problem("Entity set 'PersonaDbContext.Personas'  is null.");
-            }
-            var persona = await _context.Personas.FindAsync(id);
-            if (persona != null)
-            {
-                _context.Personas.Remove(persona);
-            }
-            
-            await _context.SaveChangesAsync();
+            _context.Delete((int)cc);
+            _context.Save();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PersonaExists(int id)
-        {
-          return (_context.Personas?.Any(e => e.Cc == id)).GetValueOrDefault();
         }
     }
 }
