@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using personapi_dotnet.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,14 @@ builder.Services.AddDbContext<PersonaDbContext>(
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
+
+// Add Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Nombre del API", Version = "v1" });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,5 +42,14 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+//Use Swagger
+app.UseSwagger();
+
+// specifying the Swagger JSON endpoint.
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Person API");
+});
 
 app.Run();
