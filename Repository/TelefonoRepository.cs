@@ -1,4 +1,5 @@
-﻿using personapi_dotnet.Interface;
+﻿using Microsoft.EntityFrameworkCore;
+using personapi_dotnet.Interface;
 using personapi_dotnet.Models.Entities;
 
 namespace personapi_dotnet.Repository
@@ -29,12 +30,12 @@ namespace personapi_dotnet.Repository
 
         public IEnumerable<Telefono> GetAll()
         {
-            return _context.Telefonos.ToList();
+            return _context.Telefonos.Include(t=>t.DuenioNavigation).ToList();
         }
 
         public Telefono GetByNum(string num)
         {
-            return _context.Telefonos.Find(num);
+            return _context.Telefonos.Include(t => t.DuenioNavigation).FirstOrDefault(m => m.Num == num);
         }
 
         public void Insert(Telefono telefono)

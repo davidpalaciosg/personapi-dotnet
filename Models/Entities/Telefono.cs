@@ -12,4 +12,9 @@ public partial class Telefono
     public int Duenio { get; set; }
 
     public virtual Persona DuenioNavigation { get; set; } = null!;
+
+    public override string ToString()
+    {
+        return $"Num: {Num}, Oper: {Oper}, Duenio: {Duenio}";
+    }
 }
