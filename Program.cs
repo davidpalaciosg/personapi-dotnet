@@ -18,7 +18,7 @@ builder.Services.AddDbContext<PersonaDbContext>(
 // Add Swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Nombre del API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Person API", Version = "v1" });
 });
 
 
@@ -51,5 +51,4 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Person API");
 });
-
 app.Run();

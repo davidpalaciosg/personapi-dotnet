@@ -34,16 +34,18 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Personas/Details/5
-        public async Task<IActionResult> Details(int? cc)
+        public async Task<IActionResult> Details(int? id)
         {
-            if (cc == null)
+            if (id == null)
             {
+                Console.WriteLine("Not cc given");
                 return NotFound();
             }
 
-            var persona = _context.GetByCC((int)cc);
+            var persona = _context.GetByCC((int)id);
             if (persona == null)
             {
+                Console.WriteLine("Persona Not found");
                 return NotFound();
             }
 
@@ -73,13 +75,13 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Personas/Edit/5
-        public async Task<IActionResult> Edit(int? cc)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (cc == null)
+            if (id == null)
             {
                 return NotFound();
             }
-            var persona = _context.GetByCC((int)cc);
+            var persona = _context.GetByCC((int)id);
             if (persona == null)
             {
                 return NotFound();
@@ -92,9 +94,9 @@ namespace personapi_dotnet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int cc, [Bind("Cc,Nombre,Apellido,Genero,Edad")] Persona persona)
+        public async Task<IActionResult> Edit(int id, [Bind("Cc,Nombre,Apellido,Genero,Edad")] Persona persona)
         {
-            if (cc != persona.Cc)
+            if (id != persona.Cc)
             {
                 return NotFound();
             }
@@ -109,14 +111,14 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Personas/Delete/5
-        public async Task<IActionResult> Delete(int? cc)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (cc == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var persona = _context.GetByCC((int)cc);
+            var persona = _context.GetByCC((int)id);
             if (persona == null)
             {
                 return NotFound();
@@ -128,9 +130,9 @@ namespace personapi_dotnet.Controllers
         // POST: Personas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? cc)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            _context.Delete((int)cc);
+            _context.Delete((int)id);
             _context.Save();
             return RedirectToAction(nameof(Index));
         }
