@@ -67,7 +67,15 @@ namespace personapi_dotnet.Controllers
             return View(estudio);
         }
 
-
+        // POST: Estudio/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id, int id2)
+        {
+            _context.Delete((int)id,id2);
+            _context.Save();
+            return RedirectToAction(nameof(Index));
+        }
 
 
     }
