@@ -49,7 +49,7 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Personas/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id,int id2)
         {
             if (id == null)
             {
@@ -57,7 +57,7 @@ namespace personapi_dotnet.Controllers
                 return NotFound();
             }
 
-            var estudio = _context.GetByKeys(id);
+            var estudio = _context.GetByKeys(id, id2);
             if (estudio == null)
             {
                 Console.WriteLine("estudio Not found");
