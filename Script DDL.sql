@@ -11,6 +11,14 @@ IF OBJECT_ID('Persona', 'U') IS NOT NULL
 IF OBJECT_ID('Profesion', 'U') IS NOT NULL
     DROP TABLE Profesion;
 
+-- Creacion de bases de datos
+CREATE DATABASE persona_db;
+
+-- Crear tablas en la base de datos especifico
+
+USE persona_db;
+GO
+
 -- Creaci�n de la tabla Profesion
 CREATE TABLE Profesion (
   id INT PRIMARY KEY,
